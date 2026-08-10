@@ -9,7 +9,6 @@ https://pydantic.dev/docs/validation/latest/concepts/fields/
 
 """
 
-import json
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
@@ -70,23 +69,6 @@ def display_station(station: SpaceStation) -> None:
         print(f"Notes: {station.notes}")
 
 
-def demonstrate_data_stream() -> None:
-    """Load a station record from the generated JSON data feed.
-
-    This showcases Pydantic's automatic type conversion: the JSON feed
-    stores timestamps as strings which are coerced into datetime objects.
-    """
-    feed_path = GENERATED_DATA_DIR / "space_stations.json"
-    if not feed_path.exists():
-        print("Generated data feed not found; skipping stream demonstration.")
-        return
-    with feed_path.open(encoding="utf-8") as feed:
-        records = json.load(feed)
-    station = SpaceStation.model_validate(records[0])
-    print("Loaded from generated data feed:")
-    display_station(station)
-
-
 def main() -> None:
     """Run the Exercise 0 demonstration."""
     separator = "=" * 40
@@ -118,7 +100,6 @@ def main() -> None:
         for issue in error.errors():
             print(issue["msg"])
     print()
-    demonstrate_data_stream()
 
 
 if __name__ == "__main__":
