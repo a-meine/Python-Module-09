@@ -10,14 +10,9 @@ https://pydantic.dev/docs/validation/latest/concepts/fields/
 """
 
 from datetime import datetime
-from pathlib import Path
 from typing import Optional
 
 from pydantic import BaseModel, Field, ValidationError
-
-GENERATED_DATA_DIR = (
-    Path(__file__).resolve().parent.parent / "tools" / "generated_data"
-)
 
 
 class SpaceStation(BaseModel):
@@ -70,7 +65,7 @@ def display_station(station: SpaceStation) -> None:
 
 
 def main() -> None:
-    """Run the Exercise 0 demonstration."""
+    """Run the demonstration."""
     separator = "=" * 40
     print("Space Station Data Validation")
     print(separator)
