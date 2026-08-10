@@ -88,7 +88,7 @@ def main() -> None:
             name="International Space Station",
             crew_size=30,
             power_level=100,
-            oxygen_level="sdf",
+            oxygen_level=5436,
             last_maintenance="2024-06-15T10:30:00",
         )
     except ValidationError as error:

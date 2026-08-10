@@ -150,7 +150,7 @@ def main() -> None:
         CrewMember(
             member_id="CRW001",
             name="Sarah Connor",
-            rank="commander",
+            rank=Rank.commander,
             age=42,
             specialization="Mission Command",
             years_experience=18,
