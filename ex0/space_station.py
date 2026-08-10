@@ -70,26 +70,30 @@ def main() -> None:
     print("Space Station Data Validation")
     print(separator)
     print("Valid station created:")
-    valid_station = SpaceStation(
-        station_id="ISS001",
-        name="International Space Station",
-        crew_size=6,
-        power_level=85.5,
-        oxygen_level=92.3,
-        last_maintenance="2024-06-15T10:30:00",
-        notes="Scheduled hull inspection completed.",
+    valid_station = SpaceStation.model_validate(
+        {
+            "station_id": "ISS001",
+            "name": "International Space Station",
+            "crew_size": 6,
+            "power_level": 85.5,
+            "oxygen_level": 92.3,
+            "last_maintenance": "2024-06-15T10:30:00",
+            "notes": "Scheduled hull inspection completed.",
+        }
     )
     display_station(valid_station)
     print(separator)
-    print("Expected validation error:")
+    print("Expected validation errors:")
     try:
-        SpaceStation(
-            station_id="ISS001",
-            name="International Space Station",
-            crew_size=30,
-            power_level=100,
-            oxygen_level=5436,
-            last_maintenance="2024-06-15T10:30:00",
+        SpaceStation.model_validate(
+            {
+                "station_id": "ISS001",
+                "name": "International Space Station",
+                "crew_size": 30,
+                "power_level": 100,
+                "oxygen_level": "sdf",
+                "last_maintenance": "2024-06-15T10:30:00",
+            }
         )
     except ValidationError as error:
         for issue in error.errors():

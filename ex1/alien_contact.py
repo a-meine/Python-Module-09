@@ -92,32 +92,36 @@ def main() -> None:
     print("Alien Contact Log Validation")
     print(separator)
     print("Valid contact report:")
-    valid_contact = AlienContact(
-        contact_id="AC_2024_001",
-        timestamp="2024-03-12T21:05:00",
-        location="Area 51, Nevada",
-        contact_type="radio",
-        signal_strength=8.5,
-        duration_minutes=45,
-        witness_count=5,
-        message_received="Greetings from Zeta Reticuli",
+    valid_contact = AlienContact.model_validate(
+        {
+            "contact_id": "AC_2024_001",
+            "timestamp": "2024-03-12T21:05:00",
+            "location": "Area 51, Nevada",
+            "contact_type": "radio",
+            "signal_strength": 8.5,
+            "duration_minutes": 45,
+            "witness_count": 5,
+            "message_received": "Greetings from Zeta Reticuli",
+        }
     )
     display_contact(valid_contact)
     print(separator)
     print("Expected validation error:")
     try:
-        AlienContact(
-            contact_id="AC_2024_002",
-            timestamp="2024-03-12T22:00:00",
-            location="Zeta Reticuli Grid",
-            contact_type="telepathic",
-            signal_strength=9.1,
-            duration_minutes=12,
-            witness_count=2,
+        AlienContact.model_validate(
+            {
+                "contact_id": "AC_2024_002",
+                "timestamp": "2024-03-12T22:00:00",
+                "location": "Zeta Reticuli Grid",
+                "contact_type": "telepathic",
+                "signal_strength": 9.1,
+                "duration_minutes": 12,
+                "witness_count": 2,
+            }
         )
     except ValidationError as error:
         for issue in error.errors():
-            print(issue["msg"])
+            print(issue["msg"].removeprefix("Value error, "))
     print()
 
 

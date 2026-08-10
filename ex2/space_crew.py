@@ -107,8 +107,8 @@ class SpaceMission(BaseModel):
         if not all(member.is_active for member in self.crew):
             raise ValueError("All crew members must be active")
         needs_experienced_crew = self.duration_days > LONG_MISSION_DAYS
-        if needs_experienced_crew and self._experienced_ratio() < (
-                EXPERIENCED_CREW_RATIO):
+        crew_ratio = self._experienced_ratio()
+        if needs_experienced_crew and crew_ratio < EXPERIENCED_CREW_RATIO:
             raise ValueError(
                 "Long missions (> 365 days) need 50% experienced crew "
                 "(5+ years)"
@@ -146,67 +146,69 @@ def main() -> None:
     print("Space Mission Crew Validation")
     print(separator)
     print("Valid mission created:")
-    valid_crew = [
-        CrewMember(
-            member_id="CRW001",
-            name="Sarah Connor",
-            rank=Rank.commander,
-            age=42,
-            specialization="Mission Command",
-            years_experience=18,
-        ),
-        CrewMember(
-            member_id="CRW002",
-            name="John Smith",
-            rank="lieutenant",
-            age=29,
-            specialization="Navigation",
-            years_experience=7,
-        ),
-        CrewMember(
-            member_id="CRW003",
-            name="Alice Johnson",
-            rank="officer",
-            age=34,
-            specialization="Engineering",
-            years_experience=9,
-        ),
-    ]
-    valid_mission = SpaceMission(
-        mission_id="M2024_MARS",
-        mission_name="Mars Colony Establishment",
-        destination="Mars",
-        launch_date="2024-11-15T08:00:00",
-        duration_days=900,
-        crew=valid_crew,
-        budget_millions=2500.0,
+    valid_mission = SpaceMission.model_validate(
+        {
+            "mission_id": "M2024_MARS",
+            "mission_name": "Mars Colony Establishment",
+            "destination": "Mars",
+            "launch_date": "2024-11-15T08:00:00",
+            "duration_days": 900,
+            "crew": [
+                {
+                    "member_id": "CRW001",
+                    "name": "Sarah Connor",
+                    "rank": "commander",
+                    "age": 42,
+                    "specialization": "Mission Command",
+                    "years_experience": 18,
+                },
+                {
+                    "member_id": "CRW002",
+                    "name": "John Smith",
+                    "rank": "lieutenant",
+                    "age": 29,
+                    "specialization": "Navigation",
+                    "years_experience": 7,
+                },
+                {
+                    "member_id": "CRW003",
+                    "name": "Alice Johnson",
+                    "rank": "officer",
+                    "age": 34,
+                    "specialization": "Engineering",
+                    "years_experience": 9,
+                },
+            ],
+            "budget_millions": 2500.0,
+        }
     )
     display_mission(valid_mission)
     print(separator)
     print("Expected validation error:")
-    leaderless_crew = [
-        CrewMember(
-            member_id="CRW010",
-            name="Mark Watney",
-            rank="officer",
-            age=31,
-            specialization="Botany",
-            years_experience=6,
-        ),
-    ]
     try:
-        SpaceMission(
-            mission_id="M2024_BASE",
-            mission_name="Deep Space Outpost",
-            destination="Moon",
-            launch_date="2024-12-01T08:00:00",
-            duration_days=180,
-            crew=leaderless_crew,
-            budget_millions=500.0,
+        SpaceMission.model_validate(
+            {
+                "mission_id": "M2024_BASE",
+                "mission_name": "Deep Space Outpost",
+                "destination": "Moon",
+                "launch_date": "2024-12-01T08:00:00",
+                "duration_days": 180,
+                "crew": [
+                    {
+                        "member_id": "CRW010",
+                        "name": "Mark Watney",
+                        "rank": "officer",
+                        "age": 31,
+                        "specialization": "Botany",
+                        "years_experience": 6,
+                    }
+                ],
+                "budget_millions": 500.0,
+            }
         )
     except ValidationError as error:
         for issue in error.errors():
-            print(issue["msg"])
+            print(issue["msg"].removeprefix("Value error, "))
     print()
 
 
